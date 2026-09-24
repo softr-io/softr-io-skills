@@ -6,15 +6,27 @@ and every [Agent Plugins](https://agent-plugins.org) client.
 
 ## Install
 
-```bash
-npx skills add softr-io/softr-io-skills
+### Claude Code
+
+Install the repository as a plugin. Claude Code keeps it updated: it refreshes the marketplace in the background and
+picks up new versions of the skills.
+
+```text
+/plugin marketplace add softr-io/softr-io-skills
+/plugin install softr@softr-io-skills
 ```
 
-Then pick the skills to install. To install one directly:
+### Every other agent
+
+The [`skills`](https://github.com/vercel-labs/skills) CLI copies a skill into the directories your agents read (Codex,
+Cursor, Gemini CLI, GitHub Copilot, OpenCode and many more read `.agents/skills/`):
 
 ```bash
 npx skills add softr-io/softr-io-skills --skill softr-workflows
 ```
+
+Run `npx skills update` to update installed skills; they do not update on their own. As agents add a plugin mechanism
+with updates of their own, they get a section of their own here.
 
 ## Available skills
 
@@ -40,6 +52,10 @@ Skills marked **Synced from** are copied here from their source repositories by
 [`.github/workflows/sync-from-repo.yml`](./.github/workflows/sync-from-repo.yml), which opens a pull request on every
 change. Do not edit them here: the next sync overwrites the copy. Edit them in the source repository, next to the tool
 they describe.
+
+The sync runs with the Softr Skills Sync GitHub App: the source repository mints an installation token to start the
+workflow here, and this workflow mints one to read the source. Both use the org secrets `SKILLS_SYNC_APP_ID` (the App's
+client id) and `SKILLS_SYNC_APP_PRIVATE_KEY`, scoped to this repository and every source repository.
 
 A skill authored in this repository would be marked **Authored here** in the table above and edited directly.
 

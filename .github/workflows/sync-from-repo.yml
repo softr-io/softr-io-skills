@@ -1,7 +1,9 @@
 # Copies a skill from the repository of the tool it describes and opens a pull request with the
 # change. The source repository runs this workflow (gh workflow run) on every merge that touches
-# its skill; the token it uses needs permission to run Actions here. The copy takes SKILL.md and
-# the references, scripts and assets directories, nothing else.
+# its skill, with an installation token of the Softr Skills Sync GitHub App; the same App, installed
+# on the source repository with the Contents permission (read), lets this workflow check the source
+# out when it is private. The copy takes SKILL.md and the references, scripts and assets
+# directories, nothing else.
 
 name: Sync skill from source repository
 
@@ -38,13 +40,22 @@ jobs:
       - name: Check out this repository
         uses: actions/checkout@v4
 
+      - name: Mint a Softr Skills Sync installation token for the source repository
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.SKILLS_SYNC_APP_ID }}
+          private-key: ${{ secrets.SKILLS_SYNC_APP_PRIVATE_KEY }}
+          owner: softr-io
+          repositories: ${{ inputs.repo }}
+
       - name: Check out the source repository
         uses: actions/checkout@v4
         with:
           repository: softr-io/${{ inputs.repo }}
           ref: ${{ inputs.sha }}
           path: source
-          token: ${{ secrets.SYNC_SOURCE_TOKEN || github.token }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Compare the skill with the copy here
         id: diff
