@@ -1,0 +1,110 @@
+# Copies a skill from the repository of the tool it describes and opens a pull request with the
+# change. The source repository runs this workflow (gh workflow run) on every merge that touches
+# its skill; the token it uses needs permission to run Actions here. The copy takes SKILL.md and
+# the references, scripts and assets directories, nothing else.
+
+name: Sync skill from source repository
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'Source repository in softr-io (e.g. softr-workflows-cli)'
+        required: true
+      skill-path:
+        description: 'Path of the skill in the source repository (e.g. skills/softr-workflows)'
+        required: true
+      skill-name:
+        description: 'Target directory name under skills/ (e.g. softr-workflows)'
+        required: true
+      sha:
+        description: 'Source commit SHA'
+        required: true
+      reviewer:
+        description: 'GitHub username to request a review from'
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: sync-${{ inputs.skill-name }}
+      cancel-in-progress: false
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+
+      - name: Check out the source repository
+        uses: actions/checkout@v4
+        with:
+          repository: softr-io/${{ inputs.repo }}
+          ref: ${{ inputs.sha }}
+          path: source
+          token: ${{ secrets.SYNC_SOURCE_TOKEN || github.token }}
+
+      - name: Compare the skill with the copy here
+        id: diff
+        run: |
+          changed=false
+          src_dir="source/${{ inputs.skill-path }}"
+          target_dir="skills/${{ inputs.skill-name }}"
+
+          if [ ! -f "$src_dir/SKILL.md" ]; then
+            echo "No SKILL.md at $src_dir in the source repository" >&2
+            exit 1
+          fi
+          if [ ! -d "$target_dir" ]; then
+            echo "New skill: ${{ inputs.skill-name }}"
+            changed=true
+          else
+            for item in SKILL.md references scripts assets; do
+              src="$src_dir/$item"
+              dst="$target_dir/$item"
+              if [ -e "$src" ] && ! diff -rq "$src" "$dst" > /dev/null 2>&1; then
+                echo "Changed: ${{ inputs.skill-name }}/$item"
+                changed=true
+              fi
+              if [ -e "$dst" ] && [ ! -e "$src" ]; then
+                echo "Removed in the source: ${{ inputs.skill-name }}/$item"
+                changed=true
+              fi
+            done
+          fi
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+
+      - name: Copy the skill and open a pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          skill_name="${{ inputs.skill-name }}"
+          src_dir="source/${{ inputs.skill-path }}"
+          sha="${{ inputs.sha }}"
+          short_sha="${sha::7}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "sync/$skill_name-$short_sha"
+
+          rm -rf "skills/$skill_name"
+          mkdir -p "skills/$skill_name"
+          cp "$src_dir/SKILL.md" "skills/$skill_name/"
+          for dir in references scripts assets; do
+            if [ -d "$src_dir/$dir" ]; then
+              cp -R "$src_dir/$dir" "skills/$skill_name/"
+            fi
+          done
+
+          git add skills/
+          git commit -m "Sync $skill_name from softr-io/${{ inputs.repo }}@$short_sha"
+          git push origin "sync/$skill_name-$short_sha"
+
+          REVIEWER="${{ inputs.reviewer }}"
+          gh pr create \
+            --title "Sync $skill_name from ${{ inputs.repo }}@$short_sha" \
+            --body "Automated copy of [softr-io/${{ inputs.repo }}@\`$short_sha\`](https://github.com/softr-io/${{ inputs.repo }}/commit/$sha), directory \`${{ inputs.skill-path }}\`. Edit the skill in the source repository, not here." \
+            ${REVIEWER:+--reviewer "$REVIEWER"}

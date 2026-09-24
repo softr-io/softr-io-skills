@@ -1,0 +1,19 @@
+{
+  "name": "softr-io-skills",
+  "metadata": {
+    "description": "Softr skills for Claude Code"
+  },
+  "owner": {
+    "name": "Softr"
+  },
+  "plugins": [
+    {
+      "name": "softr",
+      "description": "Build, test and publish Softr Workflows from local files with the softr-workflows CLI",
+      "source": "./",
+      "category": "developer-tools",
+      "homepage": "https://docs.softr.io/skills/workflows-cli",
+      "tags": ["softr", "workflows", "automation", "cli", "no-code"]
+    }
+  ]
+}
