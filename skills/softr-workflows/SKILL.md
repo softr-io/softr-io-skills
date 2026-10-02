@@ -78,10 +78,10 @@ softr-workflows login --no-browser # prints the URL instead; open it for the use
 softr-workflows whoami             # who is logged in and what the token grants
 ```
 
-`login` stores the token in `~/.softr/credentials.json` and renews it on its own. Alternatives when the browser flow
-is not possible: `login --token pat_...` with a personal API token the user created in the studio (it needs a
-`workflows:*` action in its statements; `login` warns otherwise), or `login --token <jwt>` with the value of the
-studio's auth cookie from the browser dev tools. `SOFTR_WORKFLOWS_TOKEN` overrides the stored token for scripts and CI.
+`login` stores the token in `~/.softr/credentials.json` and renews it on its own. When the browser flow is not
+possible, the user creates a personal API token in the studio (account menu, API tokens; it needs a `workflows:*`
+action in its statements, `login` warns otherwise) and passes it with `login --token pat_...`. Nothing else is
+accepted, the studio's session cookie included. `SOFTR_WORKFLOWS_TOKEN` overrides the stored token for scripts and CI.
 On `401` run `login` again. Never print a token or paste one into a file the user did not ask for.
 
 ## Project layout
@@ -93,7 +93,7 @@ lead-scoring/
   softr-workflows.jsonc      # the workflow: title, workspaceId, triggers, actions, paths, configuration, id
   actions/
     score.py                 # body of the CUSTOM_CODE node "score", wrapped in def main(inputData):
-    notify.js                # body of the CUSTOM_CODE node "notify", wrapped in export default function (inputData)
+    notify.js                # body of the CUSTOM_CODE node "notify", wrapped in export default async function (inputData)
   .softr-workflows/          # CLI state: server version and draft, cached test outputs, JSON schema. Add to .gitignore
 ```
 

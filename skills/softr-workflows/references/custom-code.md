@@ -23,7 +23,7 @@ JavaScript, `actions/<nodeId>.js`:
  */
 
 /** @param {InputData} inputData */
-export default function (inputData) {
+export default async function (inputData) {
   const domain = inputData.email.split('@')[1] ?? '';
   return { qualified: inputData.threshold > 5 && domain !== 'gmail.com', domain };
 }
@@ -37,20 +37,20 @@ Python, `actions/<nodeId>.py`:
 # softr-workflows: end of generated header
 
 def main(inputData):
-    import json
-    from urllib import request
-
-    with request.urlopen(inputData["url"], timeout=10) as response:
-        payload = json.load(response)
-    return {"count": len(payload.get("items", []))}
+    res = fetch(inputData["url"])
+    if not res.ok:
+        raise RuntimeError(f"API answered {res.status}")
+    return {"count": len(res.json().get("items", []))}
 ```
 
 Rules the CLI enforces on `push`:
 
-- Exactly one function: `export default function (inputData)` in JavaScript, `def main(inputData):` in Python.
-  Anything outside it (imports at the top, helpers, constants) is rejected with `file:line:col`. Put helpers inside the
-  function.
-- The parameter is named `inputData`. An `async` function is rejected: the runtime is synchronous.
+- Exactly one function: `export default async function (inputData)` in JavaScript (a non-async function is accepted
+  too), `def main(inputData):` in Python. Anything outside it (imports at the top, helpers, constants) is rejected with
+  `file:line:col`. Put helpers inside the function.
+- A node still on CUSTOM_CODE 1.0.0 or 1.1.0 gets a plain `function`, and `push` rejects an `async` one. Set
+  `"version": "1.2.0"` on the node to use `async`, `fetch` and integrations.
+- The parameter is named `inputData`.
 - No workflow placeholders such as `{outputs.x:::$.y}` anywhere in the file. Map them in `inputData`.
 - Do not edit the generated header. It is rewritten on every `pull`, `test` and `outputs --refresh` and is never
   uploaded.
@@ -77,18 +77,39 @@ the type reads `unknown`, test the upstream node before writing code against it.
 The returned value becomes the node output at `$.body`; the service wraps it as `{ "statusCode": 200, "body": ... }`.
 Later nodes reference it as `{outputs.<nodeId>:::$.body}` or a field of it, built with
 `softr-workflows placeholder <nodeId> body <key>`. Return a JSON-compatible value: objects, arrays, strings, numbers,
-booleans. A JavaScript falsy return is reported as `null`. A thrown error or a raised exception fails the node and the
+booleans. A JavaScript `undefined` return is reported as `null`. A thrown error or a raised exception fails the node and the
 run; the message shows up in `test`.
+
+## HTTP calls and integrations
+
+Both runtimes offer `fetch(url, options)`; JavaScript awaits it, Python calls it. Options: `method`, `headers`, `body`
+(a string as is, `text/plain` unless you set `Content-Type`; an object or array as JSON; `URLSearchParams` form-encoded), `integration` (an alias, see below).
+The response has `status`, `ok`, `headers`, `text()`, `json()`, and `arrayBuffer()` / `bytes()`.
+
+The node's `inputs.integrations` lists the workspace integrations the code may call:
+
+```jsonc
+"integrations": [
+  { "alias": "crm", "integrationId": "9f1c2a3b-4d5e-4f60-8a71-b2c3d4e5f607" }
+]
+```
+
+A call to a host of an attached integration carries that integration's credentials; the code never sees a token, and
+a key must never be written into the code or `inputData`. When two attached integrations share a host, pick one with
+`fetch(url, { integration: 'crm' })`. Any other host is called as written, without credentials. A REST API
+integration has no provider host, so it authenticates only a call that names its alias. Integration ids come
+from the studio (Workspace settings → Integrations). Every integration the Call API action can authenticate with can be
+attached; database connections, Softr Databases, Softr Apps, Telegram and Trello cannot.
 
 ## Runtime limits
 
-| Runtime             | Available                                                                                | Not available                                                                       |
-| ------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| JavaScript (ES2020) | Plain language features, `JSON`, `Math`, `Date`, regular expressions, arrays and strings | `fetch`, `require`, `import`, `Buffer`, `URL`, `crypto`, `await`, timers, Node APIs |
-| Python 3.13         | The standard library, imported inside `main`; `urllib` for HTTP calls                    | Third-party packages, `pip`                                                         |
+| Runtime              | Available                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Not available                                                                         |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| JavaScript (Node 24) | `fetch` with `await`, `crypto` (the `node:crypto` module), `Buffer`, `URL`, `URLSearchParams`, `TextEncoder`/`TextDecoder`, `structuredClone`, timers, `JSON`, `Math`, `Date`, regular expressions                                                                                                                                                                                                                                                                                                                                                                          | `require`, `import`, file system, `process.env` (empty)                               |
+| Python 3.12          | `fetch`, class statements, `rsa` (the `rsa` package API: PKCS#1 v1.5 encrypt/decrypt/sign/verify, PKCS#1 or PKCS#8 keys, base64 text accepted), and these modules: `json`, `re`, `math`, `statistics`, `decimal`, `fractions`, `datetime`, `zoneinfo`, `time`, `calendar`, `random`, `secrets`, `collections`, `itertools`, `functools`, `operator`, `string`, `textwrap`, `unicodedata`, `difflib`, `html`, `base64`, `hashlib`, `hmac`, `uuid`, `struct`, `copy`, `heapq`, `bisect`, `typing`, `enum`, `dataclasses`, `csv`, `io` (`StringIO`, `BytesIO`), `urllib.parse` | `os`, `sys`, `subprocess`, `open`, `requests`, `urllib.request`, third-party packages |
 
-So an HTTP call from code is Python-only. For JavaScript workflows, call the API with a `CALL_API` node before the code
-node and map its output into `inputData`.
+Limits: about two minutes per run (then "Execution timed out"), two seconds of synchronous JavaScript or two seconds of
+Python CPU time, 20 `fetch` calls per second and 10 open at once, 30 s for a target to answer one `fetch`, 5 MB per request body, about 6 MB per response.
 
 ## Test the node
 
