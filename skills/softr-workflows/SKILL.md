@@ -73,8 +73,8 @@ machine-readable output, and exit code 1 means the command did not do what was a
 ## Log in once
 
 ```bash
-softr-workflows login              # opens the browser: the user approves the CLI in the studio
-softr-workflows login --no-browser # prints the URL instead; open it for the user, the CLI waits for the approval
+softr-workflows login              # in a terminal: asks browser (recommended) or token; the browser path opens the studio consent page
+softr-workflows login --no-browser # browser path without a terminal: prints the URL; open it for the user, the CLI waits for the approval
 softr-workflows whoami             # who is logged in and what the token grants
 ```
 
