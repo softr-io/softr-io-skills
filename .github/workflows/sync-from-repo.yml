@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       repo:
-        description: 'Source repository in softr-io (e.g. softr-workflows-cli)'
+        description: 'Source repository in softr-io (e.g. softr-cli)'
         required: true
       skill-path:
         description: 'Path of the skill in the source repository (e.g. skills/softr-workflows)'

@@ -6,7 +6,7 @@ Distribution repository for Softr's agent skills. Skills are synced from the rep
 
 The following skills are synced from other repositories and are overwritten on the next sync:
 
-- `skills/softr-workflows/`: source [softr-io/softr-workflows-cli](https://github.com/softr-io/softr-workflows-cli),
+- `skills/softr-workflows/`: source [softr-io/softr-cli](https://github.com/softr-io/softr-cli),
   directory `skills/softr-workflows`
 
 Edit them in their source repository instead.

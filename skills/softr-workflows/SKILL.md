@@ -16,7 +16,7 @@ metadata:
   author: softr
   version: '0.2.0'
   homepage: https://docs.softr.io/skills/workflows-cli
-  source: https://github.com/softr-io/softr-workflows-cli
+  source: https://github.com/softr-io/softr-cli
 ---
 
 # Softr Workflows CLI
