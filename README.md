@@ -32,7 +32,7 @@ with updates of their own, they get a section of their own here.
 
 | Skill                                        | What it is for                                                                                        | Source                                                                                          |
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [`softr-workflows`](./skills/softr-workflows) | Build, test and publish Softr Workflows from local files with the Softr CLI (`softr`)              | Synced from [softr-io/softr-cli](https://github.com/softr-io/softr-cli)     |
+| `softr-workflows` (arrives with the first sync) | Build, test and publish Softr Workflows from local files with the Softr CLI (`softr`)              | Synced from [softr-io/softr-cli](https://github.com/softr-io/softr-cli)     |
 
 Each skill tells the agent what the tool is for, what it needs, how to install it and how to work with it, so adding
 the skill is the only step you take. The documentation of Softr itself stays on [docs.softr.io](https://docs.softr.io);
@@ -58,6 +58,9 @@ workflow here, and this workflow mints one to read the source. Both use the org 
 client id) and `SKILLS_SYNC_APP_PRIVATE_KEY`, scoped to this repository and every source repository.
 
 A skill authored in this repository would be marked **Authored here** in the table above and edited directly.
+
+How a team publishes a skill from a new repository (the App setup, the caller workflow, testing, failures):
+[softr-io/github-workflows, docs/sync-skills.md](https://github.com/softr-io/github-workflows/blob/master/docs/sync-skills.md).
 
 ## License
 
