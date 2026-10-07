@@ -12,7 +12,7 @@
       "description": "Build, test and publish Softr Workflows from local files with the softr-workflows CLI",
       "source": "./",
       "category": "developer-tools",
-      "homepage": "https://docs.softr.io/skills/workflows-cli",
+      "homepage": "https://docs.softr.io/cli/overview",
       "tags": ["softr", "workflows", "automation", "cli", "no-code"]
     }
   ]
