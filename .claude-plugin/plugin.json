@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "softr",
+  "description": "Build, test and publish Softr Workflows from local files with the softr-workflows CLI",
+  "version": "0.1.0",
+  "author": {
+    "name": "Softr",
+    "url": "https://www.softr.io"
+  },
+  "homepage": "https://docs.softr.io/softr-cli",
+  "repository": "https://github.com/softr-io/softr-io-skills",
+  "license": "MIT",
+  "keywords": ["softr", "workflows", "automation", "cli", "no-code"]
+}
