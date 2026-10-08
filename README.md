@@ -32,7 +32,7 @@ with updates of their own, they get a section of their own here.
 
 | Skill                                        | What it is for                                                                                        | Source                                                                                          |
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `softr-workflows` (arrives with the first sync) | Build, test and publish Softr Workflows from local files with the Softr CLI (`softr`)              | Synced from [softr-io/softr-cli](https://github.com/softr-io/softr-cli)     |
+| `softr-workflows` (arrives with the first sync) | Build, test and publish Softr Workflows from local files with the Softr CLI (`softr`)              | Synced from the Softr CLI repository     |
 
 Each skill tells the agent what the tool is for, what it needs, how to install it and how to work with it, so adding
 the skill is the only step you take. The documentation of Softr itself stays on [docs.softr.io](https://docs.softr.io);

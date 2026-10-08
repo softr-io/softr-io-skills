@@ -117,5 +117,5 @@ jobs:
           REVIEWER="${{ inputs.reviewer }}"
           gh pr create \
             --title "Sync $skill_name from ${{ inputs.repo }}@$short_sha" \
-            --body "Automated copy of [softr-io/${{ inputs.repo }}@\`$short_sha\`](https://github.com/softr-io/${{ inputs.repo }}/commit/$sha), directory \`${{ inputs.skill-path }}\`. Edit the skill in the source repository, not here." \
+            --body "Automated copy of \`${{ inputs.repo }}\` at \`$short_sha\`, directory \`${{ inputs.skill-path }}\`. Edit the skill in the source repository, not here." \
             ${REVIEWER:+--reviewer "$REVIEWER"}
