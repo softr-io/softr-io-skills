@@ -32,7 +32,8 @@ with updates of their own, they get a section of their own here.
 
 | Skill                                        | What it is for                                                                                        | Source                                                                                          |
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `softr-workflows` (arrives with the first sync) | Build, test and publish Softr Workflows from local files with the Softr CLI (`softr`)              | Synced from the Softr CLI repository     |
+| `softr-cli` | Install the Softr CLI, log in, and find workspaces and integrations; the base for every `softr` scope | Synced from the Softr CLI repository |
+| `softr-workflows` | Build, test and publish Softr Workflows from local files with the Softr CLI (`softr workflows`) | Synced from the Softr CLI repository |
 
 Each skill tells the agent what the tool is for, what it needs, how to install it and how to work with it, so adding
 the skill is the only step you take. The documentation of Softr itself stays on [docs.softr.io](https://docs.softr.io);
@@ -48,19 +49,14 @@ in `skills/`. It also carries the manifests of these platforms:
 
 ## Editing skills
 
-Skills marked **Synced from** are copied here from their source repositories by
-[`.github/workflows/sync-from-repo.yml`](./.github/workflows/sync-from-repo.yml), which opens a pull request on every
-change. Do not edit them here: the next sync overwrites the copy. Edit them in the source repository, next to the tool
-they describe.
+Skills marked **Synced from** are copied here from their source repositories: a workflow that runs in the source
+repository compares each skill with the copy here and opens a pull request on every change. Do not edit them here:
+the next sync overwrites the copy. Edit them in the source repository, next to the tool they describe.
 
-The sync runs with the Softr Skills Sync GitHub App: the source repository mints an installation token to start the
-workflow here, and this workflow mints one to read the source. Both use the org secrets `SKILLS_SYNC_APP_ID` (the App's
-client id) and `SKILLS_SYNC_APP_PRIVATE_KEY`, scoped to this repository and every source repository.
+The sync pushes its branches with a token of the Softr Skills Sync GitHub App that can write to this repository and
+nothing else. This repository holds no secret and no workflow for it.
 
 A skill authored in this repository would be marked **Authored here** in the table above and edited directly.
-
-How a team publishes a skill from a new repository (the App setup, the caller workflow, testing, failures):
-[softr-io/github-workflows, docs/sync-skills.md](https://github.com/softr-io/github-workflows/blob/master/docs/sync-skills.md).
 
 ## License
 
