@@ -12,7 +12,7 @@ compatibility: >-
   needs a browser on the same machine; otherwise a personal API token from the Softr studio.
 metadata:
   author: softr
-  version: '0.1.0'
+  version: '0.1.1'
   homepage: https://docs.softr.io/softr-cli
   source: https://github.com/softr-io/softr-io-skills/tree/master/skills/softr-cli
 ---
@@ -62,7 +62,8 @@ softr integrations [--workspace <id>] [--type <TYPE>] # the integrations connect
 ```
 
 Commands that need a workspace take `--workspace <id>`; without it they use `SOFTR_WORKSPACE_ID`, else the only or
-the default workspace of the user. An integration's id is what a node input such as `integrationId` or a custom code
+the default workspace of the user. `workflows init --pin-to-app <id>` (default `SOFTR_PINNED_APP_ID`) pins a new workflow to an
+application, so the app lists it. An integration's id is what a node input such as `integrationId` or a custom code
 node's `integrations` list takes.
 
 ## Environment
@@ -74,6 +75,7 @@ and writes nothing to disk:
 | ------------------------------------------ | ------------------------------------------------------------------------ |
 | `SOFTR_TOKEN`                              | The token to use instead of the stored one (`pat_...` or an OAuth token) |
 | `SOFTR_WORKSPACE_ID`                       | The default workspace for commands that take `--workspace`               |
+| `SOFTR_PINNED_APP_ID`                      | The application `workflows init` pins new workflows to (`--pin-to-app`)  |
 | `SOFTR_STUDIO_URL`, `SOFTR_STUDIO_API_URL` | Another Softr environment than production (the studio and its API)       |
 | `SOFTR_WORKFLOWS_API_URL`                  | The workflows service of that environment                                |
 
