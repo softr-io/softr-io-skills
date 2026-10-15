@@ -14,7 +14,7 @@ compatibility: >-
   needs a browser on the same machine; otherwise a personal API token from the Softr studio.
 metadata:
   author: softr
-  version: '0.5.1'
+  version: '0.5.2'
   homepage: https://docs.softr.io/softr-cli
   source: https://github.com/softr-io/softr-io-skills/tree/master/skills/softr-workflows
 ---
@@ -86,9 +86,12 @@ Conventions in `softr-workflows.jsonc`:
 
 1. **Start.** `softr workflows init "<title>"` creates the workflow on the server with a `WEBHOOK` trigger named
    `trigger` and the local directory. `--trigger <TYPE>` picks another trigger, `--workspace <id>` a workspace when the
-   user has several, `--pin-to-app <id>` (default `SOFTR_PINNED_APP_ID`) pins the workflow to a Softr application so the app lists
-   it; `softr workflows list --app <id>` shows an app's workflows. To work on an existing workflow:
-   `softr workflows pull` lists them, `softr workflows pull <id>` downloads one.
+   user has several, `--pin-to-app <id>` (default `SOFTR_PINNED_APP_ID`) pins the workflow to a Softr application of the
+   same workspace so the app lists it. `softr workflows pin` / `unpin` (`--app <id>`, default `SOFTR_PINNED_APP_ID`;
+   `--id <workflowId>`, default the directory's workflow) do the same for an existing one. `softr workflows list --app <id>`
+   shows an app's workflows with their trigger types; with `--json` each workflow's `triggers` holds the trigger ids,
+   the `triggerId` app code fires a workflow by. To work on an existing workflow: `softr workflows pull` lists them,
+   `softr workflows pull <id>` downloads one.
 2. **Add nodes.** `softr workflows add CUSTOM_CODE --id score --lang PYTHON --title "Score lead"` appends a node after
    the last one and creates `actions/score.py` with an empty function. `--after <nodeId>` places it elsewhere,
    `--in-loop <loopId>` inside a loop body. `softr workflows spec` lists the node types on offer, `spec <TYPE>` shows
