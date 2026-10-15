@@ -12,7 +12,7 @@ compatibility: >-
   needs a browser on the same machine; otherwise a personal API token from the Softr studio.
 metadata:
   author: softr
-  version: '0.1.2'
+  version: '0.1.3'
   homepage: https://docs.softr.io/softr-cli
   source: https://github.com/softr-io/softr-io-skills/tree/master/skills/softr-cli
 ---
@@ -51,7 +51,9 @@ softr logout             # forget the stored token
 
 `login` stores the token in `~/.softr/credentials.json`, keyed by the environment, and renews it on its own. When the
 browser flow is not possible, the user creates a personal API token in the studio (account menu, API tokens; it needs
-the actions of the scope in its statements, `login` warns otherwise) and passes it with `login --token pat_...`.
+the actions of the scope in its statements, `login` warns otherwise) and runs `softr login --token` in their own
+terminal, which asks for it with the input hidden. Never ask for the token in the chat and never put it on a command
+line: `--token` takes no value, a token reaches it only through stdin (`pbpaste | softr login --token`).
 Nothing else is accepted, the studio's session cookie included. On `401` run `login` again.
 
 ## Workspaces and integrations
