@@ -14,7 +14,7 @@ compatibility: >-
   needs a browser on the same machine; otherwise a personal API token from the Softr studio.
 metadata:
   author: softr
-  version: '0.5.2'
+  version: '0.5.3'
   homepage: https://docs.softr.io/softr-cli
   source: https://github.com/softr-io/softr-io-skills/tree/master/skills/softr-workflows
 ---
@@ -60,9 +60,10 @@ The `softr-cli` skill covers installing and updating the CLI, logging in, `--jso
 Without it: `npm install -g @softr/cli` (Node.js 22 or newer), then `softr login`, then `softr --version` to confirm.
 Every workflow command sits under `softr workflows`; `softr workflows --help` lists them.
 
-## Project layout
+## Workflow directory
 
-One directory holds exactly one workflow. A parent directory may group several.
+One directory holds exactly one workflow. The `softr-cli` skill shows how a project folder groups workflow and
+database directories.
 
 ```text
 lead-scoring/
