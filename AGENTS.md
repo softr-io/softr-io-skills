@@ -6,8 +6,10 @@ Distribution repository for Softr's agent skills. Skills are synced from the rep
 
 The following skills are synced from other repositories and are overwritten on the next sync:
 
+- `skills/softr-cli/`: source: the Softr CLI repository (private), directory `skills/softr-cli`
 - `skills/softr-workflows/`: source: the Softr CLI repository (private),
   directory `skills/softr-workflows`
+- `skills/softr-db/`: source: the Softr CLI repository (private), directory `skills/softr-db`
 
 Edit them in their source repository instead.
 

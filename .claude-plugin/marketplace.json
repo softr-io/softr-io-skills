@@ -9,11 +9,11 @@
   "plugins": [
     {
       "name": "softr",
-      "description": "Build, test and publish Softr Workflows from local files with the softr-workflows CLI",
+      "description": "Work with Softr from local files with the Softr CLI: build, test and publish Softr Workflows, and manage Softr Databases",
       "source": "./",
       "category": "developer-tools",
       "homepage": "https://docs.softr.io/softr-cli",
-      "tags": ["softr", "workflows", "automation", "cli", "no-code"]
+      "tags": ["softr", "workflows", "databases", "automation", "cli", "no-code"]
     }
   ]
 }
