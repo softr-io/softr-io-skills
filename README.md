@@ -34,6 +34,7 @@ with updates of their own, they get a section of their own here.
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | `softr-cli` | Install the Softr CLI, log in, and find workspaces and integrations; the base for every `softr` scope | Synced from the Softr CLI repository |
 | `softr-workflows` | Build, test and publish Softr Workflows from local files with the Softr CLI (`softr workflows`) | Synced from the Softr CLI repository |
+| `softr-db` | Manage Softr Databases from the Softr CLI (`softr db`): databases, tables, fields, views and records | Synced from the Softr CLI repository |
 
 Each skill tells the agent what the tool is for, what it needs, how to install it and how to work with it, so adding
 the skill is the only step you take. The documentation of Softr itself stays on [docs.softr.io](https://docs.softr.io);
