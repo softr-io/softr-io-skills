@@ -1,7 +1,7 @@
 {
   "name": "softr",
   "displayName": "Softr",
-  "description": "Skills for working with Softr: build, test and publish Softr Workflows from local files with the softr-workflows CLI.",
+  "description": "Skills for working with Softr: work with Softr from local files with the Softr CLI: build, test and publish Softr Workflows, and manage Softr Databases.",
   "version": "0.1.0",
   "author": {
     "name": "Softr",
@@ -10,5 +10,5 @@
   "homepage": "https://docs.softr.io/softr-cli",
   "repository": "https://github.com/softr-io/softr-io-skills",
   "license": "MIT",
-  "keywords": ["softr", "workflows", "automation", "cli", "no-code"]
+  "keywords": ["softr", "workflows", "databases", "automation", "cli", "no-code"]
 }

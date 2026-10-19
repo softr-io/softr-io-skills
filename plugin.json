@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "softr",
   "version": "0.1.0",
-  "description": "Build, test and publish Softr Workflows from local files with the softr-workflows CLI",
+  "description": "Work with Softr from local files with the Softr CLI: build, test and publish Softr Workflows, and manage Softr Databases",
   "author": {
     "name": "Softr",
     "url": "https://www.softr.io"
@@ -10,5 +10,5 @@
   "homepage": "https://docs.softr.io/softr-cli",
   "repository": "https://github.com/softr-io/softr-io-skills",
   "license": "MIT",
-  "keywords": ["softr", "workflows", "automation", "cli", "no-code"]
+  "keywords": ["softr", "workflows", "databases", "automation", "cli", "no-code"]
 }
