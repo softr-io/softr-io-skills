@@ -3,7 +3,7 @@ name: softr-cli
 description: >-
   Install, update and log in to the Softr CLI (@softr/cli, command softr), and use its account and
   workspace commands: whoami, workspaces, integrations. The CLI reaches Softr from the terminal, with
-  a scope per area of Softr (softr workflows today, more to come), each with a skill of its own. Use
+  a scope per area of Softr (softr workflows and softr db today, more to come), each with a skill of its own. Use
   when a Softr skill or the user needs the CLI, when "softr" is not found, when a login is needed, or
   to find the workspaces and the connected integrations a token reaches. Load before any softr command.
 license: MIT
@@ -12,7 +12,7 @@ compatibility: >-
   needs a browser on the same machine; otherwise a personal API token from the Softr studio.
 metadata:
   author: softr
-  version: '0.1.3'
+  version: '0.1.6'
   homepage: https://docs.softr.io/softr-cli
   source: https://github.com/softr-io/softr-io-skills/tree/master/skills/softr-cli
 ---
@@ -59,13 +59,29 @@ Nothing else is accepted, the studio's session cookie included. On `401` run `lo
 ## Workspaces and integrations
 
 ```bash
-softr workspaces                                      # the workspaces the token reaches, with the role and the default one
+softr workspaces                                      # the workspaces the token reaches: role, default one, granted scopes
 softr integrations [--workspace <id>] [--type <TYPE>] # the integrations connected in a workspace: id, name, type, account
 ```
 
 Commands that need a workspace take `--workspace <id>`; without it they use `SOFTR_WORKSPACE_ID`, else the only or
 the default workspace of the user. An integration's id is what a node input such as `integrationId` or a custom code
 node's `integrations` list takes.
+
+## Project folder
+
+One directory holds one workflow (`softr-workflows.jsonc`) or one database (`softr-db.jsonc`); the user owns and
+commits that file. Next to it the CLI keeps a dot directory (`.softr-workflows/`, `.softr-db/`) that it rewrites at any
+time and that is gitignored. A project folder holds related ones side by side:
+
+```text
+my-project/
+  lead-scoring/   softr-workflows.jsonc  actions/  .softr-workflows/
+  crm/            softr-db.jsonc         .softr-db/schema.json
+```
+
+`.softr-db/schema.json` holds the database's tables and fields with their ids, names, types and options. Read it to
+find the ids a workflow or a record needs, instead of asking the server again; `softr db get` in that directory
+refreshes it.
 
 ## Environment
 
@@ -78,11 +94,13 @@ and writes nothing to disk:
 | `SOFTR_WORKSPACE_ID`                       | The default workspace for commands that take `--workspace`               |
 | `SOFTR_STUDIO_URL`, `SOFTR_STUDIO_API_URL` | Another Softr environment than production (the studio and its API)       |
 | `SOFTR_WORKFLOWS_API_URL`                  | The workflows service of that environment                                |
+| `SOFTR_TABLES_API_URL`                     | The Databases service of that environment                                |
 
 ## Scopes
 
 | Scope             | Skill             | What it covers                                             |
 | ----------------- | ----------------- | ---------------------------------------------------------- |
 | `softr workflows` | `softr-workflows` | Build, test and publish Softr Workflows from files on disk |
+| `softr db`        | `softr-db`        | Databases, tables, fields, views and records               |
 
 `softr --help` and `softr <scope> --help` list the commands; the skill of the scope says how to use them.
