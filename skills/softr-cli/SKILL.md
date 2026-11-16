@@ -12,7 +12,7 @@ compatibility: >-
   needs a browser on the same machine; otherwise a personal API token from the Softr studio.
 metadata:
   author: softr
-  version: '0.1.6'
+  version: '0.1.7'
   homepage: https://docs.softr.io/softr-cli
   source: https://github.com/softr-io/softr-io-skills/tree/master/skills/softr-cli
 ---
@@ -95,6 +95,7 @@ and writes nothing to disk:
 | `SOFTR_STUDIO_URL`, `SOFTR_STUDIO_API_URL` | Another Softr environment than production (the studio and its API)       |
 | `SOFTR_WORKFLOWS_API_URL`                  | The workflows service of that environment                                |
 | `SOFTR_TABLES_API_URL`                     | The Databases service of that environment                                |
+| `SOFTR_BUILDER_API_URL`                    | The studio's node catalog: labels and descriptions in `workflows spec`   |
 
 ## Scopes
 
