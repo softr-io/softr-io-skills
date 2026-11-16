@@ -14,7 +14,7 @@ compatibility: >-
   needs a browser on the same machine; otherwise a personal API token from the Softr studio.
 metadata:
   author: softr
-  version: '0.5.3'
+  version: '0.6.0'
   homepage: https://docs.softr.io/softr-cli
   source: https://github.com/softr-io/softr-io-skills/tree/master/skills/softr-workflows
 ---
@@ -41,10 +41,10 @@ Use the CLI when the workflow's logic belongs in code files the user keeps, vers
 scoring in JavaScript or Python, webhooks answered by code, schedules that call an API. It builds deterministically
 from files, so it suits agents and repositories.
 
-Do not use it for workflows made of many third-party integration steps (Slack, Airtable, Gmail and the like): the CLI
-offers only a small set of node types on purpose (see [Node types on offer](#node-types-on-offer)). Those workflows are
-built in the [Softr studio](https://docs.softr.io/workflows/workflows.md) or through the
-[Softr MCP server](https://docs.softr.io/mcp/workflows.md), which reaches every node type.
+The CLI reaches every node type the service runs (see [Node types](#node-types)). For workflows made mostly of
+third-party steps whose inputs are picked from the connected account (an Airtable base and table, a Slack channel), the
+[Softr studio](https://docs.softr.io/workflows/workflows.md) or the
+[Softr MCP server](https://docs.softr.io/mcp/workflows.md) is easier: they list those options, the CLI needs their ids.
 
 ## Preconditions
 
@@ -81,7 +81,14 @@ Conventions in `softr-workflows.jsonc`:
 - Node ids are readable slugs such as `score`. They must be unique and must not contain `:::`.
 - `$schema` points at `.softr-workflows/schema.json`, which `pull` and `init` write. Editors validate and complete the
   file with it. The service stays the authority: `push` accepts incomplete drafts, `publish` validates everything.
-- Comments and key order in the file survive `add`, `replace` and `remove`.
+- Comments and key order in the file survive `add`, `replace`, `remove` and `edit`.
+- Change the keys of an existing node with `softr workflows edit <nodeId>`, not by rewriting the JSON:
+  `--set inputs.limit=10` (a JSON value), `--set-text 'inputs.message={outputs.n2:::$.name}'` (a text as it is),
+  `--unset inputs.old`, `--rename inputs.autoExpandsLinks=autoExpandLinks`. Paths read like
+  `inputs.filter.conditions[0].rightSide`; quote a key with spaces: `inputs.fields["Due date"]`.
+- Inputs may hold keys the service does not read: the studio keeps its own state there (hidden inputs, the values of
+  another wait type). Never remove a key you did not add. `push`, `verify` and `edit` name a new unknown key, usually
+  a typo, with the closest input name; fix it with `edit --rename` or `--unset`.
 
 ## The loop
 
@@ -95,13 +102,16 @@ Conventions in `softr-workflows.jsonc`:
    `softr workflows pull <id>` downloads one.
 2. **Add nodes.** `softr workflows add CUSTOM_CODE --id score --lang PYTHON --title "Score lead"` appends a node after
    the last one and creates `actions/score.py` with an empty function. `--after <nodeId>` places it elsewhere,
-   `--in-loop <loopId>` inside a loop body. `softr workflows spec` lists the node types on offer, `spec <TYPE>` shows
-   inputs, output, notes, an example node and the docs URL. Node types that take integration ids (the Softr Tables triggers and `CALL_API` through `integrationId`, `CUSTOM_CODE` through its `integrations` list) get them from a connected integration: `softr integrations` lists them for the
+   `--in-loop <loopId>` inside a loop body. Any type the service runs works: `softr workflows spec --search <text>`
+   finds one, `spec <TYPE>` shows the inputs of its newest version with their types, allowed values and defaults. A new
+   node gets every input of its type, set to the default or null; fill the ones it needs. Node types that take integration ids (the Softr Tables triggers and `CALL_API` through `integrationId`, `CUSTOM_CODE` through its `integrations` list) get them from a connected integration: `softr integrations` lists them for the
    workflow's workspace, `--type SLACK` narrows the list. `replace <nodeId> <TYPE>` changes a node's type,
    `remove <nodeId>` deletes it with its paths.
 3. **Write the code and its inputs.** Edit the function in `actions/<id>.js|py` (see
    [references/custom-code.md](references/custom-code.md)) and
-   map what it needs under the node's `inputs.inputData`. Values are literals or placeholders.
+   map what it needs under the node's `inputs.inputData` with `edit`, such as
+   `softr workflows edit score --set-text 'inputs.inputData.email={outputs.trigger:::$.body.email}'`. Values are
+   literals or placeholders.
 4. **Push.** `softr workflows push` inlines the files and saves a new draft. It sends nothing when the files match the
    last sync and refuses when the server copy changed since then; read the message before choosing `pull --force`
    (take the server copy, local edits are lost) or `push --force` (overwrite the server).
@@ -138,13 +148,15 @@ A node can reference only its predecessors, and the CLI can only type-check a pa
 is always: test upstream, `placeholder`, edit `inputData`, push, test downstream. A placeholder as the whole value keeps
 its JSON type; inside a longer string it becomes text.
 
-## Node types on offer
+## Node types
 
-`spec` lists them. Triggers: `WEBHOOK`, `RECURRING_SCHEDULE`, `ONE_TIME_SCHEDULE`, Softr Tables events, Softr Apps
-events including the app's **Run workflow** action, incoming email. Actions: `CUSTOM_CODE`, `RESPONDED_TO_WEBHOOK`,
-`CALL_API`, `BRANCH`, `FILTER`, `LOOP_ACTION_GROUP`, `WAIT`. Other integrations stay in the studio. `spec <TYPE>`
-points to the public docs page of each type; the docs index for agents is <https://docs.softr.io/llms.txt>, and every
-docs page is also served as `.md`.
+`spec` lists every node type the workflows service runs with its integration and newest version; `--search <text>` and
+`--kind trigger|action` narrow the list. `spec <TYPE>` shows the inputs of the newest version (`--node-version` for an
+older one) from the service's own schema, and an example node for the common ones (`WEBHOOK`, the schedules,
+`CUSTOM_CODE`, `CALL_API`, `BRANCH`, `FILTER`, `LOOP_ACTION_GROUP`, `WAIT`). `.softr-workflows/schema.json` carries the
+same schemas, so an editor checks the inputs while you type; `softr workflows schema <TYPE>` prints only the JSON schema
+of one node of a type (`--node-version` for an older version). For what a type does, search the docs; the index for
+agents is <https://docs.softr.io/llms.txt>, and every docs page is also served as `.md`.
 
 ## When something goes wrong
 
