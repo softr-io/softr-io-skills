@@ -14,7 +14,7 @@ compatibility: >-
   needs a browser on the same machine; otherwise a personal API token from the Softr studio.
 metadata:
   author: softr
-  version: '0.6.1'
+  version: '0.6.2'
   homepage: https://docs.softr.io/softr-cli
   source: https://github.com/softr-io/softr-io-skills/tree/master/skills/softr-workflows
 ---
@@ -161,16 +161,16 @@ agents is <https://docs.softr.io/llms.txt>, and every docs page is also served a
 
 ## When something goes wrong
 
-| Message or situation                           | What to do                                                                                                   |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `command not found: softr`, `No token stored`  | The `softr-cli` skill: install the CLI, `softr login`                                                        |
-| `The server copy changed since your last sync` | Someone edited in the studio. Ask which side wins: `pull --force` or `push --force`                          |
-| `not backed by test data`                      | Test the referenced node first, then rebuild the token with `placeholder`                                    |
-| `Code files that do not parse`                 | The file must hold exactly one function; the message names `file:line:col`                                   |
-| `verify` exits with 1                          | Read the `NOT` sections; fix, push, test, verify again                                                       |
-| `Nodes on an older version` in any output      | Run `softr workflows upgrade` (or `upgrade <nodeId>`); CUSTOM_CODE moves to 1.2.0 with its integrations list |
-| `The service would reject publishing`          | A definition problem, not a test problem. Fix the config; `--force` never helps                              |
-| A node reads something the code needs          | Map it in `inputData`; code has no other input                                                               |
+| Message or situation                           | What to do                                                                                                                 |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `command not found: softr`, `No token stored`  | The `softr-cli` skill: install the CLI, `softr login`                                                                      |
+| `The server copy changed since your last sync` | Someone edited in the studio. Ask which side wins: `pull --force` or `push --force`                                        |
+| `not backed by test data`                      | Test the referenced node first, then rebuild the token with `placeholder`                                                  |
+| `Code files that do not parse`                 | The file must hold exactly one function; the message names `file:line:col`                                                 |
+| `verify` exits with 1                          | Read the `NOT` sections; fix, push, test, verify again                                                                     |
+| `Nodes on an older version` in any output      | Run `softr workflows upgrade` (or `upgrade <nodeId>`); CUSTOM_CODE moves to the newest version, with its integrations list |
+| `The service would reject publishing`          | A definition problem, not a test problem. Fix the config; `--force` never helps                                            |
+| A node reads something the code needs          | Map it in `inputData`; code has no other input                                                                             |
 
 ## References
 

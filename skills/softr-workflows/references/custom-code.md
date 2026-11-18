@@ -49,7 +49,8 @@ Rules the CLI enforces on `push`:
   too), `def main(inputData):` in Python. Anything outside it (imports at the top, helpers, constants) is rejected with
   `file:line:col`. Put helpers inside the function.
 - A node still on CUSTOM_CODE 1.0.0 or 1.1.0 gets a plain `function`, and `push` rejects an `async` one. Run
-  `softr workflows upgrade <nodeId>` to move it to 1.2.0 (`async`, `fetch`, integrations); the body stays as it is.
+  `softr workflows upgrade <nodeId>` to move it to the newest version (`async`, `fetch`, integrations); the body stays
+  as it is.
 - The parameter is named `inputData`.
 - No workflow placeholders such as `{outputs.x:::$.y}` anywhere in the file. Map them in `inputData`.
 - Do not edit the generated header. It is rewritten on every `pull`, `test` and `outputs --refresh` and is never
@@ -94,10 +95,10 @@ The node's `inputs.integrations` lists the workspace integrations the code may c
 ]
 ```
 
-A call to a host of an attached integration carries that integration's credentials; the code never sees a token, and
-a key must never be written into the code or `inputData`. When two attached integrations share a host, pick one with
-`fetch(url, { integration: 'crm' })`. Any other host is called as written, without credentials. A REST API
-integration has no provider host, so it authenticates only a call that names its alias. Integration ids: `softr integrations` lists the workspace's connected integrations (or the studio, Workspace settings → Integrations). Every integration the Call API action can authenticate with can be
+A call to the API of an attached integration carries that integration's credentials; the code never sees a token, and
+a key must never be written into the code or `inputData`. When two attached integrations share a host, or the URL alone
+does not pick one (a REST API integration can need this), pick one with `fetch(url, { integration: 'crm' })`. Any other
+URL is called as written, without credentials; the headers of a REST API integration carry a placeholder value there. Integration ids: `softr integrations` lists the workspace's connected integrations (or the studio, Workspace settings → Integrations). Every integration the Call API action can authenticate with can be
 attached; database connections, Softr Databases, Softr Apps, Telegram and Trello cannot.
 
 ## Runtime limits
