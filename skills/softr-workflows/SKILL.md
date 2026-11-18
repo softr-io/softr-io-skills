@@ -14,7 +14,7 @@ compatibility: >-
   needs a browser on the same machine; otherwise a personal API token from the Softr studio.
 metadata:
   author: softr
-  version: '0.6.0'
+  version: '0.6.1'
   homepage: https://docs.softr.io/softr-cli
   source: https://github.com/softr-io/softr-io-skills/tree/master/skills/softr-workflows
 ---
@@ -76,7 +76,8 @@ lead-scoring/
 
 Conventions in `softr-workflows.jsonc`:
 
-- Any string value `"@@/relative/path"` is replaced by that file's content on `push`. Every `CUSTOM_CODE` node's
+- Any string value `"@@/relative/path"` is replaced by that file's content on `push`. The file must be inside the
+  workflow directory (symlinks included); the CLI refuses a reference that leads out of it. Every `CUSTOM_CODE` node's
   `inputs.code` is such a reference.
 - Node ids are readable slugs such as `score`. They must be unique and must not contain `:::`.
 - `$schema` points at `.softr-workflows/schema.json`, which `pull` and `init` write. Editors validate and complete the
