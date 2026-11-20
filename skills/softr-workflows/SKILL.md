@@ -14,7 +14,7 @@ compatibility: >-
   needs a browser on the same machine; otherwise a personal API token from the Softr studio.
 metadata:
   author: softr
-  version: '0.6.2'
+  version: '0.6.3'
   homepage: https://docs.softr.io/softr-cli
   source: https://github.com/softr-io/softr-io-skills/tree/master/skills/softr-workflows
 ---
@@ -132,6 +132,9 @@ email` builds `{outputs.<nodeId>:::$.body.email}` and fails with the existing ke
 8. **Publish.** `softr workflows publish` enables the latest version. It refuses unpushed edits and a changed server
    copy, and stops on validation problems the service reports. For untested or stale nodes it asks in a terminal and
    needs `--force` from a script. `unpublish` disables the workflow; `status` shows local, server and live state.
+   Runs that are in progress continue on their version: after `publish` on the replaced version, after `unpublish`
+   on any version. Pass `--stop-ongoing-runs` only when the user asks to stop them: it stops the runs that wait (a
+   wait step, a retry, a user interaction, the serial queue) and reports how many.
 
 The trigger's URL and the workflow in the studio are in the output of `push`, `init` and `status`.
 
